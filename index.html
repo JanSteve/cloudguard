@@ -1,0 +1,3026 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CloudGuard — AWS Cloud Security Reference Hub</title>
+    <meta name="description"
+        content="A free, open-source reference guide covering AWS cloud security concepts, services, and GDPR compliance. Built for cloud learners and security professionals.">
+    <meta property="og:title" content="CloudGuard — AWS Cloud Security Reference Hub">
+    <meta property="og:description"
+        content="AWS Security, Clearly Explained. Your reference guide to securing cloud infrastructure on AWS.">
+    <meta property="og:image" content="og-image.png">
+    <meta property="og:type" content="website">
+    <meta name="twitter:card" content="summary_large_image">
+    <link rel="icon" href="favicon.svg" type="image/svg+xml">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Epilogue:wght@700;800;900&family=Outfit:wght@300;400;500&family=Fira+Code:wght@400;500&display=swap"
+        rel="stylesheet">
+    <style>
+        *,
+        *::before,
+        *::after {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box
+        }
+
+        :root {
+            --bg-void: #030508;
+            --bg-deep: #07090F;
+            --bg-card: #0C1220;
+            --bg-elevated: #111B2E;
+            --bg-stripe: #080D18;
+            --secure: #00C853;
+            --secure-dim: #00903C;
+            --secure-bg: rgba(0, 200, 83, 0.07);
+            --secure-border: rgba(0, 200, 83, 0.2);
+            --alert: #FF3D3D;
+            --alert-dim: #CC0000;
+            --alert-bg: rgba(255, 61, 61, 0.07);
+            --electric: #0088FF;
+            --electric-dim: #0055CC;
+            --electric-bg: rgba(0, 136, 255, 0.08);
+            --electric-border: rgba(0, 136, 255, 0.2);
+            --amber: #FFB300;
+            --amber-bg: rgba(255, 179, 0, 0.07);
+            --aws: #FF9900;
+            --text-primary: #E4EBF5;
+            --text-secondary: #7A8FA6;
+            --text-dim: #3A4D63;
+            --text-green: #00C853;
+            --text-code: #00E5FF;
+            --border: rgba(0, 136, 255, 0.08);
+            --border-card: rgba(228, 235, 245, 0.05);
+            --divider: rgba(228, 235, 245, 0.04);
+            --glow-blue: 0 0 40px rgba(0, 136, 255, 0.15);
+            --glow-green: 0 0 30px rgba(0, 200, 83, 0.15);
+            --glow-red: 0 0 25px rgba(255, 61, 61, 0.15);
+            --teal: #00BFA5;
+            --purple: #9C27B0;
+        }
+
+        html {
+            scroll-behavior: smooth;
+            scroll-padding-top: 72px
+        }
+
+        body {
+            font-family: 'Outfit', sans-serif;
+            background: var(--bg-deep);
+            color: var(--text-primary);
+            line-height: 1.6;
+            overflow-x: hidden
+        }
+
+        h1,
+        h2,
+        h3,
+        h4,
+        h5,
+        h6 {
+            font-family: 'Epilogue', sans-serif
+        }
+
+        code,
+        pre,
+        .mono {
+            font-family: 'Fira Code', monospace
+        }
+
+        a {
+            color: var(--electric);
+            text-decoration: none;
+            transition: color .2s
+        }
+
+        a:hover {
+            color: #33a0ff
+        }
+
+        img {
+            max-width: 100%;
+            display: block
+        }
+
+        ::-webkit-scrollbar {
+            width: 5px
+        }
+
+        ::-webkit-scrollbar-track {
+            background: transparent
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: var(--electric);
+            border-radius: 10px
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 24px
+        }
+
+        .section-pad {
+            padding: 100px 0
+        }
+
+        .section-header {
+            text-align: center;
+            margin-bottom: 64px
+        }
+
+        .section-header h2 {
+            font-size: clamp(28px, 4vw, 44px);
+            font-weight: 800;
+            margin-bottom: 12px;
+            position: relative;
+            display: inline-block
+        }
+
+        .section-header h2::after {
+            content: '';
+            position: absolute;
+            bottom: -8px;
+            left: 0;
+            width: 0;
+            height: 3px;
+            background: var(--electric);
+            border-radius: 2px;
+            transition: width .8s ease
+        }
+
+        .section-header h2.visible::after {
+            width: 100%
+        }
+
+        .section-header p {
+            font-size: 18px;
+            color: var(--text-secondary);
+            max-width: 600px;
+            margin: 16px auto 0
+        }
+
+        .dot-bg {
+            background-image: radial-gradient(circle, rgba(0, 136, 255, 0.12) 1px, transparent 1px);
+            background-size: 24px 24px
+        }
+
+        .pill {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 6px 16px;
+            border-radius: 99px;
+            font-size: 11px;
+            font-family: 'Fira Code', monospace;
+            letter-spacing: .15em;
+            text-transform: uppercase
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 14px 32px;
+            border-radius: 8px;
+            font-family: 'Epilogue', sans-serif;
+            font-weight: 700;
+            font-size: 15px;
+            cursor: pointer;
+            border: none;
+            transition: all .25s cubic-bezier(.4, 0, .2, 1)
+        }
+
+        .btn-primary {
+            background: var(--electric);
+            color: #fff
+        }
+
+        .btn-primary:hover {
+            transform: scale(1.03);
+            box-shadow: var(--glow-blue);
+            filter: brightness(1.1);
+            color: #fff
+        }
+
+        .btn-secondary {
+            background: transparent;
+            border: 1px solid var(--border-card);
+            color: var(--text-secondary)
+        }
+
+        .btn-secondary:hover {
+            border-color: var(--electric-border);
+            color: var(--electric)
+        }
+
+        .fade-in {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: opacity .7s ease, transform .7s ease
+        }
+
+        .fade-in.visible {
+            opacity: 1;
+            transform: translateY(0)
+        }
+
+        .fade-left {
+            opacity: 0;
+            transform: translateX(-40px);
+            transition: opacity .7s ease, transform .7s ease
+        }
+
+        .fade-left.visible {
+            opacity: 1;
+            transform: translateX(0)
+        }
+
+        .fade-right {
+            opacity: 0;
+            transform: translateX(40px);
+            transition: opacity .7s ease, transform .7s ease
+        }
+
+        .fade-right.visible {
+            opacity: 1;
+            transform: translateX(0)
+        }
+
+        /* NAVBAR */
+        .navbar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 64px;
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 32px;
+            transition: all .3s ease
+        }
+
+        .navbar.scrolled {
+            background: rgba(7, 9, 15, 0.95);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid var(--border)
+        }
+
+        .nav-brand {
+            display: flex;
+            align-items: center;
+            gap: 10px
+        }
+
+        .nav-brand svg {
+            width: 20px;
+            height: 20px
+        }
+
+        .nav-brand .brand-name {
+            font-family: 'Epilogue', sans-serif;
+            font-weight: 800;
+            font-size: 18px;
+            color: var(--text-primary)
+        }
+
+        .nav-brand .brand-sub {
+            font-size: 13px;
+            color: var(--text-dim);
+            margin-left: 4px
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 24px;
+            align-items: center
+        }
+
+        .nav-links a {
+            font-size: 13px;
+            font-weight: 500;
+            color: var(--text-secondary);
+            position: relative
+        }
+
+        .nav-links a::after {
+            content: '';
+            position: absolute;
+            bottom: -4px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: var(--electric);
+            transition: width .25s
+        }
+
+        .nav-links a:hover {
+            color: var(--electric)
+        }
+
+        .nav-links a:hover::after {
+            width: 100%
+        }
+
+        .nav-right {
+            display: flex;
+            align-items: center;
+            gap: 16px
+        }
+
+        .nav-right .gh-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 8px 16px;
+            border: 1px solid var(--electric-border);
+            border-radius: 6px;
+            font-size: 13px;
+            font-weight: 500;
+            color: var(--electric);
+            background: var(--electric-bg);
+            transition: all .2s
+        }
+
+        .nav-right .gh-btn:hover {
+            background: var(--electric);
+            color: #fff
+        }
+
+        .nav-right .by-link {
+            font-size: 13px;
+            color: var(--text-dim)
+        }
+
+        .hamburger {
+            display: none;
+            flex-direction: column;
+            gap: 5px;
+            cursor: pointer;
+            background: none;
+            border: none;
+            padding: 4px
+        }
+
+        .hamburger span {
+            display: block;
+            width: 22px;
+            height: 2px;
+            background: var(--text-secondary);
+            border-radius: 2px;
+            transition: all .3s
+        }
+
+        .mobile-menu {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(3, 5, 8, 0.97);
+            backdrop-filter: blur(20px);
+            z-index: 999;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 28px
+        }
+
+        .mobile-menu.open {
+            display: flex
+        }
+
+        .mobile-menu a {
+            font-family: 'Epilogue', sans-serif;
+            font-size: 22px;
+            font-weight: 700;
+            color: var(--text-primary)
+        }
+
+        .mobile-menu .close-btn {
+            position: absolute;
+            top: 20px;
+            right: 24px;
+            font-size: 32px;
+            color: var(--text-secondary);
+            background: none;
+            border: none;
+            cursor: pointer
+        }
+
+        /* HERO */
+        .hero {
+            position: relative;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            background: var(--bg-void);
+            overflow: hidden
+        }
+
+        .scan-line {
+            position: absolute;
+            left: 0;
+            width: 100%;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, rgba(0, 136, 255, 0.2), transparent);
+            animation: scanLine 8s linear infinite;
+            pointer-events: none
+        }
+
+        .scan-line:nth-child(2) {
+            animation-delay: 4s
+        }
+
+        @keyframes scanLine {
+            0% {
+                top: -2%;
+                opacity: .6
+            }
+
+            100% {
+                top: 102%;
+                opacity: 0
+            }
+        }
+
+        .hero-shield {
+            position: absolute;
+            right: 8%;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 340px;
+            height: 380px;
+            opacity: .15
+        }
+
+        .hero-shield svg {
+            width: 100%;
+            height: 100%
+        }
+
+        .shield-path {
+            stroke-dasharray: 1000;
+            stroke-dashoffset: 1000;
+            animation: drawShield 2.5s ease forwards .5s
+        }
+
+        @keyframes drawShield {
+            to {
+                stroke-dashoffset: 0
+            }
+        }
+
+        @keyframes floatShield {
+
+            0%,
+            100% {
+                transform: translateY(-50%) rotate(0deg)
+            }
+
+            50% {
+                transform: translateY(-50%) rotate(3deg)
+            }
+        }
+
+        .hero-content {
+            position: relative;
+            z-index: 2;
+            max-width: 620px;
+            padding-left: 5%
+        }
+
+        .hero .status-badge {
+            margin-bottom: 28px;
+            opacity: 0;
+            animation: fadeSlideUp .6s ease .2s forwards
+        }
+
+        .hero .status-badge .pill {
+            border: 1px solid var(--secure-border);
+            background: var(--secure-bg);
+            color: var(--secure)
+        }
+
+        .hero-headline {
+            margin-bottom: 20px
+        }
+
+        .hero-headline .line {
+            display: block;
+            font-weight: 900;
+            font-size: clamp(40px, 6vw, 78px);
+            line-height: 1.08;
+            opacity: 0;
+            transform: translateY(40px)
+        }
+
+        .hero-headline .line:nth-child(1) {
+            animation: fadeSlideUp .7s ease .3s forwards
+        }
+
+        .hero-headline .line:nth-child(2) {
+            color: var(--electric);
+            animation: fadeSlideUp .7s ease .5s forwards
+        }
+
+        @keyframes fadeSlideUp {
+            to {
+                opacity: 1;
+                transform: translateY(0)
+            }
+        }
+
+        .hero-sub {
+            font-size: 17px;
+            color: var(--text-secondary);
+            max-width: 500px;
+            line-height: 1.7;
+            opacity: 0;
+            animation: fadeSlideUp .7s ease .7s forwards;
+            margin-bottom: 36px
+        }
+
+        .hero-stats {
+            display: flex;
+            gap: 32px;
+            margin-bottom: 36px;
+            opacity: 0;
+            animation: fadeSlideUp .7s ease .9s forwards
+        }
+
+        .hero-stats .stat .num {
+            font-family: 'Epilogue', sans-serif;
+            font-weight: 800;
+            font-size: 36px;
+            color: var(--electric)
+        }
+
+        .hero-stats .stat .label {
+            font-size: 13px;
+            color: var(--text-secondary)
+        }
+
+        .hero-ctas {
+            display: flex;
+            gap: 16px;
+            flex-wrap: wrap;
+            opacity: 0;
+            animation: fadeSlideUp .7s ease 1.1s forwards;
+            margin-bottom: 28px
+        }
+
+        .hero-attr {
+            font-size: 13px;
+            color: var(--text-dim);
+            opacity: 0;
+            animation: fadeSlideUp .7s ease 1.3s forwards
+        }
+
+        .hero-attr a {
+            color: var(--electric);
+            font-size: 13px
+        }
+
+        .hero-chevron {
+            position: absolute;
+            bottom: 32px;
+            left: 50%;
+            transform: translateX(-50%);
+            animation: bounce 2s infinite
+        }
+
+        .hero-chevron svg {
+            width: 28px;
+            height: 28px;
+            stroke: var(--text-dim)
+        }
+
+        @keyframes bounce {
+
+            0%,
+            100% {
+                transform: translateX(-50%) translateY(0)
+            }
+
+            50% {
+                transform: translateX(-50%) translateY(10px)
+            }
+        }
+
+        /* SHARED RESPONSIBILITY */
+        .resp-visual {
+            display: grid;
+            grid-template-columns: 1fr 40px 1fr;
+            gap: 0;
+            margin-bottom: 56px;
+            align-items: stretch
+        }
+
+        .resp-half {
+            border-radius: 16px;
+            padding: 32px 28px
+        }
+
+        .resp-half.aws-side {
+            background: var(--secure-bg);
+            border: 1px solid var(--secure-border)
+        }
+
+        .resp-half.cust-side {
+            background: var(--electric-bg);
+            border: 1px solid var(--electric-border)
+        }
+
+        .resp-half .resp-label {
+            font-family: 'Epilogue', sans-serif;
+            font-weight: 700;
+            font-size: 18px;
+            margin-bottom: 8px
+        }
+
+        .resp-half .resp-sublabel {
+            font-size: 13px;
+            color: var(--text-secondary);
+            margin-bottom: 20px;
+            font-style: italic
+        }
+
+        .resp-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+            padding: 12px 0;
+            border-bottom: 1px solid var(--divider)
+        }
+
+        .resp-item:last-child {
+            border-bottom: none
+        }
+
+        .resp-item .ri-icon {
+            font-size: 20px;
+            flex-shrink: 0;
+            margin-top: 2px
+        }
+
+        .resp-item .ri-title {
+            font-weight: 500;
+            font-size: 15px;
+            color: var(--text-primary)
+        }
+
+        .resp-item .ri-desc {
+            font-size: 13px;
+            color: var(--text-secondary);
+            margin-top: 2px
+        }
+
+        .resp-divider {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            position: relative
+        }
+
+        .resp-divider::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            bottom: 0;
+            width: 1px;
+            background: var(--divider)
+        }
+
+        .resp-divider .div-label {
+            background: var(--bg-card);
+            border: 1px solid var(--border-card);
+            padding: 8px 6px;
+            border-radius: 8px;
+            font-size: 10px;
+            font-weight: 700;
+            color: var(--text-dim);
+            writing-mode: vertical-rl;
+            letter-spacing: .15em;
+            position: relative;
+            z-index: 1
+        }
+
+        .insight-cards {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 24px
+        }
+
+        .insight-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-card);
+            border-radius: 14px;
+            padding: 28px 24px
+        }
+
+        .insight-card .ic-icon {
+            font-size: 28px;
+            margin-bottom: 12px
+        }
+
+        .insight-card .ic-title {
+            font-family: 'Epilogue', sans-serif;
+            font-weight: 700;
+            font-size: 16px;
+            margin-bottom: 8px
+        }
+
+        .insight-card .ic-text {
+            font-size: 14px;
+            color: var(--text-secondary);
+            line-height: 1.65
+        }
+
+        /* SERVICES */
+        .filter-tabs {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            justify-content: center;
+            margin-bottom: 48px
+        }
+
+        .filter-tab {
+            padding: 8px 20px;
+            border-radius: 99px;
+            font-size: 13px;
+            font-weight: 500;
+            background: var(--bg-card);
+            border: 1px solid var(--border-card);
+            color: var(--text-secondary);
+            cursor: pointer;
+            transition: all .25s
+        }
+
+        .filter-tab:hover,
+        .filter-tab.active {
+            border-color: var(--electric-border);
+            color: var(--electric);
+            background: var(--electric-bg)
+        }
+
+        .services-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 24px
+        }
+
+        .service-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-card);
+            border-radius: 16px;
+            padding: 28px 24px;
+            transition: all .25s cubic-bezier(.4, 0, .2, 1)
+        }
+
+        .service-card:hover {
+            transform: translateY(-6px);
+            box-shadow: var(--glow-blue)
+        }
+
+        .service-card:hover.cat-identity {
+            border-color: rgba(0, 136, 255, 0.4);
+            box-shadow: var(--glow-blue)
+        }
+
+        .service-card:hover.cat-detection {
+            border-color: rgba(255, 179, 0, 0.4);
+            box-shadow: 0 0 30px rgba(255, 179, 0, 0.12)
+        }
+
+        .service-card:hover.cat-protection {
+            border-color: rgba(0, 200, 83, 0.4);
+            box-shadow: var(--glow-green)
+        }
+
+        .service-card:hover.cat-compliance {
+            border-color: rgba(0, 191, 165, 0.4);
+            box-shadow: 0 0 30px rgba(0, 191, 165, 0.12)
+        }
+
+        .service-card:hover.cat-encryption {
+            border-color: rgba(156, 39, 176, 0.4);
+            box-shadow: 0 0 30px rgba(156, 39, 176, 0.12)
+        }
+
+        .sc-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start
+        }
+
+        .sc-icon {
+            width: 48px;
+            height: 48px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px
+        }
+
+        .sc-icon.identity {
+            background: rgba(0, 136, 255, 0.15)
+        }
+
+        .sc-icon.detection {
+            background: rgba(255, 179, 0, 0.15)
+        }
+
+        .sc-icon.protection {
+            background: rgba(0, 200, 83, 0.15)
+        }
+
+        .sc-icon.compliance {
+            background: rgba(0, 191, 165, 0.15)
+        }
+
+        .sc-icon.encryption {
+            background: rgba(156, 39, 176, 0.15)
+        }
+
+        .sc-cat {
+            font-size: 11px;
+            font-weight: 500;
+            padding: 4px 10px;
+            border-radius: 99px
+        }
+
+        .sc-cat.identity {
+            color: var(--electric);
+            background: var(--electric-bg)
+        }
+
+        .sc-cat.detection {
+            color: var(--amber);
+            background: var(--amber-bg)
+        }
+
+        .sc-cat.protection {
+            color: var(--secure);
+            background: var(--secure-bg)
+        }
+
+        .sc-cat.compliance {
+            color: var(--teal);
+            background: rgba(0, 191, 165, 0.08)
+        }
+
+        .sc-cat.encryption {
+            color: var(--purple);
+            background: rgba(156, 39, 176, 0.08)
+        }
+
+        .sc-name {
+            font-family: 'Epilogue', sans-serif;
+            font-weight: 700;
+            font-size: 20px;
+            margin-top: 16px
+        }
+
+        .sc-tagline {
+            font-size: 14px;
+            color: var(--text-secondary);
+            font-style: italic;
+            margin-top: 4px
+        }
+
+        .sc-divider {
+            height: 1px;
+            background: var(--divider);
+            margin: 16px 0
+        }
+
+        .sc-desc {
+            font-size: 14px;
+            color: var(--text-secondary);
+            line-height: 1.65
+        }
+
+        .sc-analogy {
+            margin-top: 14px;
+            padding: 12px 14px;
+            background: rgba(255, 179, 0, 0.06);
+            border-left: 3px solid var(--amber);
+            border-radius: 0 8px 8px 0;
+            font-size: 13px;
+            color: var(--text-secondary);
+            font-style: italic
+        }
+
+        .sc-analogy .analogy-icon {
+            margin-right: 6px
+        }
+
+        .sc-uses {
+            margin-top: 14px;
+            list-style: none;
+            display: flex;
+            flex-direction: column;
+            gap: 6px
+        }
+
+        .sc-uses li {
+            font-size: 13px;
+            color: var(--text-secondary);
+            display: flex;
+            align-items: center;
+            gap: 8px
+        }
+
+        .sc-uses li::before {
+            content: '';
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background: var(--secure);
+            flex-shrink: 0
+        }
+
+        .sc-exam {
+            margin-top: 14px;
+            font-family: 'Fira Code', monospace;
+            font-size: 12px;
+            color: var(--text-dim)
+        }
+
+        .service-card.hidden {
+            display: none
+        }
+
+        /* IAM */
+        .iam-pyramid {
+            max-width: 700px;
+            margin: 0 auto 56px;
+            display: flex;
+            flex-direction: column;
+            gap: 6px
+        }
+
+        .pyramid-layer {
+            border-radius: 10px;
+            padding: 16px 20px;
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            cursor: pointer;
+            transition: all .3s;
+            position: relative
+        }
+
+        .pyramid-layer:hover {
+            transform: scale(1.02)
+        }
+
+        .pyramid-layer .pl-badge {
+            font-size: 11px;
+            font-weight: 700;
+            padding: 4px 10px;
+            border-radius: 6px;
+            flex-shrink: 0;
+            font-family: 'Fira Code', monospace
+        }
+
+        .pyramid-layer .pl-title {
+            font-family: 'Epilogue', sans-serif;
+            font-weight: 700;
+            font-size: 16px
+        }
+
+        .pyramid-layer .pl-desc {
+            font-size: 13px;
+            color: var(--text-secondary)
+        }
+
+        .iam-principles {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 24px;
+            margin-bottom: 48px
+        }
+
+        .iam-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-card);
+            border-radius: 14px;
+            padding: 28px 24px
+        }
+
+        .iam-card .ic-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 12px
+        }
+
+        .iam-card .ic-header span:first-child {
+            font-size: 28px
+        }
+
+        .iam-card .ic-header .badge {
+            font-size: 10px;
+            padding: 4px 10px;
+            border-radius: 6px;
+            font-weight: 700;
+            font-family: 'Fira Code', monospace
+        }
+
+        .iam-card h4 {
+            font-family: 'Epilogue', sans-serif;
+            font-weight: 700;
+            font-size: 17px;
+            margin-bottom: 8px
+        }
+
+        .iam-card p {
+            font-size: 14px;
+            color: var(--text-secondary);
+            line-height: 1.65
+        }
+
+        .policy-block {
+            max-width: 700px;
+            margin: 0 auto
+        }
+
+        .policy-block .code-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: #000A18;
+            padding: 12px 16px;
+            border-radius: 10px 10px 0 0;
+            border: 1px solid var(--border-card);
+            border-bottom: none
+        }
+
+        .policy-block .code-header span {
+            font-family: 'Fira Code', monospace;
+            font-size: 12px;
+            color: var(--text-dim)
+        }
+
+        .copy-btn {
+            background: var(--electric-bg);
+            border: 1px solid var(--electric-border);
+            color: var(--electric);
+            padding: 6px 12px;
+            border-radius: 6px;
+            font-size: 12px;
+            cursor: pointer;
+            font-family: 'Fira Code', monospace;
+            transition: all .2s
+        }
+
+        .copy-btn:hover {
+            background: var(--electric);
+            color: #fff
+        }
+
+        .policy-code {
+            background: #000A18;
+            padding: 20px;
+            border-radius: 0 0 10px 10px;
+            border: 1px solid var(--border-card);
+            border-top: none;
+            overflow-x: auto
+        }
+
+        .policy-code pre {
+            font-family: 'Fira Code', monospace;
+            font-size: 13px;
+            line-height: 1.7;
+            color: var(--text-code)
+        }
+
+        .policy-code .key {
+            color: #FF6B9D
+        }
+
+        .policy-code .str {
+            color: #00C853
+        }
+
+        .policy-code .punct {
+            color: #7A8FA6
+        }
+
+        .policy-label {
+            text-align: center;
+            margin-top: 16px;
+            font-size: 14px;
+            color: var(--text-secondary);
+            max-width: 500px;
+            margin-left: auto;
+            margin-right: auto;
+            line-height: 1.65
+        }
+
+        /* VPC */
+        .vpc-diagram {
+            max-width: 900px;
+            margin: 0 auto 56px;
+            background: var(--bg-card);
+            border: 2px dashed var(--electric-border);
+            border-radius: 20px;
+            padding: 32px;
+            position: relative
+        }
+
+        .vpc-diagram .vpc-label {
+            position: absolute;
+            top: -14px;
+            left: 24px;
+            background: var(--bg-deep);
+            padding: 0 12px;
+            font-family: 'Epilogue', sans-serif;
+            font-weight: 700;
+            color: var(--electric);
+            font-size: 14px
+        }
+
+        .vpc-inner {
+            border: 1px solid var(--border-card);
+            border-radius: 14px;
+            padding: 24px;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 24px;
+            position: relative
+        }
+
+        .vpc-inner .vi-label {
+            position: absolute;
+            top: -12px;
+            left: 20px;
+            background: var(--bg-card);
+            padding: 0 10px;
+            font-size: 12px;
+            font-weight: 700;
+            color: var(--text-secondary);
+            font-family: 'Fira Code', monospace
+        }
+
+        .subnet {
+            border-radius: 12px;
+            padding: 20px
+        }
+
+        .subnet.public {
+            background: rgba(0, 136, 255, 0.05);
+            border: 1px solid rgba(0, 136, 255, 0.15)
+        }
+
+        .subnet.private {
+            background: rgba(0, 200, 83, 0.04);
+            border: 1px solid rgba(0, 200, 83, 0.15)
+        }
+
+        .subnet h4 {
+            font-size: 15px;
+            font-weight: 700;
+            margin-bottom: 4px
+        }
+
+        .subnet .sub-desc {
+            font-size: 12px;
+            color: var(--text-dim);
+            margin-bottom: 16px
+        }
+
+        .subnet-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 10px 12px;
+            background: var(--bg-elevated);
+            border-radius: 8px;
+            margin-bottom: 8px;
+            border: 1px solid var(--border-card)
+        }
+
+        .subnet-item .si-icon {
+            font-size: 20px
+        }
+
+        .subnet-item .si-name {
+            font-size: 13px;
+            font-weight: 500
+        }
+
+        .vpc-layers {
+            display: flex;
+            gap: 16px;
+            justify-content: center;
+            margin-top: 20px;
+            flex-wrap: wrap
+        }
+
+        .vpc-layer-badge {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            padding: 8px 14px;
+            border-radius: 8px;
+            font-size: 12px;
+            font-weight: 500;
+            background: var(--bg-elevated);
+            border: 1px solid var(--border-card)
+        }
+
+        .layer-cards {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 24px
+        }
+
+        .layer-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-card);
+            border-radius: 14px;
+            padding: 28px 24px
+        }
+
+        .layer-card h4 {
+            font-family: 'Epilogue', sans-serif;
+            font-weight: 700;
+            font-size: 17px;
+            margin-bottom: 8px
+        }
+
+        .layer-card p {
+            font-size: 14px;
+            color: var(--text-secondary);
+            line-height: 1.65;
+            margin-bottom: 10px
+        }
+
+        .layer-card .analogy {
+            font-size: 13px;
+            color: var(--text-dim);
+            font-style: italic
+        }
+
+        /* GDPR */
+        .gdpr-steps {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 24px;
+            margin-bottom: 56px
+        }
+
+        .gdpr-step {
+            background: var(--bg-card);
+            border: 1px solid var(--border-card);
+            border-radius: 14px;
+            padding: 28px 24px
+        }
+
+        .gdpr-step .step-num {
+            font-family: 'Epilogue', sans-serif;
+            font-weight: 900;
+            font-size: 48px;
+            color: var(--electric);
+            opacity: .3;
+            margin-bottom: 8px
+        }
+
+        .gdpr-step h4 {
+            font-family: 'Epilogue', sans-serif;
+            font-weight: 700;
+            font-size: 17px;
+            margin-bottom: 10px
+        }
+
+        .gdpr-step p {
+            font-size: 14px;
+            color: var(--text-secondary);
+            line-height: 1.65
+        }
+
+        .gdpr-step ul {
+            list-style: none;
+            margin-top: 10px;
+            display: flex;
+            flex-direction: column;
+            gap: 6px
+        }
+
+        .gdpr-step ul li {
+            font-size: 13px;
+            color: var(--text-secondary);
+            display: flex;
+            align-items: flex-start;
+            gap: 8px
+        }
+
+        .gdpr-step ul li::before {
+            content: '→';
+            color: var(--electric);
+            flex-shrink: 0
+        }
+
+        .gdpr-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 48px;
+            background: var(--bg-card);
+            border-radius: 14px;
+            overflow: hidden
+        }
+
+        .gdpr-table th,
+        .gdpr-table td {
+            padding: 16px 20px;
+            text-align: left;
+            border-bottom: 1px solid var(--divider)
+        }
+
+        .gdpr-table th {
+            font-family: 'Epilogue', sans-serif;
+            font-weight: 700;
+            font-size: 14px;
+            color: var(--text-primary);
+            background: var(--bg-elevated)
+        }
+
+        .gdpr-table td {
+            font-size: 14px
+        }
+
+        .gdpr-table td:first-child {
+            font-weight: 500;
+            color: var(--text-primary)
+        }
+
+        .gdpr-table td:last-child {
+            color: var(--text-secondary)
+        }
+
+        .gdpr-table tr:nth-child(even) td {
+            background: rgba(0, 136, 255, 0.02)
+        }
+
+        .lux-callout {
+            background: rgba(0, 136, 255, 0.06);
+            border-left: 4px solid var(--electric);
+            border-radius: 0 14px 14px 0;
+            padding: 32px 28px
+        }
+
+        .lux-callout h4 {
+            font-family: 'Epilogue', sans-serif;
+            font-weight: 700;
+            font-size: 20px;
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            gap: 10px
+        }
+
+        .lux-callout p {
+            font-size: 15px;
+            color: var(--text-secondary);
+            line-height: 1.75
+        }
+
+        /* ROADMAP */
+        .timeline {
+            max-width: 700px;
+            margin: 0 auto;
+            position: relative;
+            padding-left: 40px
+        }
+
+        .timeline::before {
+            content: '';
+            position: absolute;
+            left: 15px;
+            top: 0;
+            bottom: 0;
+            width: 2px;
+            background: var(--border-card)
+        }
+
+        .timeline-item {
+            position: relative;
+            margin-bottom: 48px
+        }
+
+        .timeline-item:last-child {
+            margin-bottom: 0
+        }
+
+        .timeline-dot {
+            position: absolute;
+            left: -33px;
+            top: 4px;
+            width: 18px;
+            height: 18px;
+            border-radius: 50%;
+            border: 3px solid var(--bg-deep)
+        }
+
+        .timeline-dot.active {
+            background: var(--electric);
+            box-shadow: 0 0 12px rgba(0, 136, 255, 0.5);
+            animation: pulse 2s infinite
+        }
+
+        .timeline-dot.planned {
+            background: var(--bg-card);
+            border-color: var(--text-dim)
+        }
+
+        .timeline-dot.goal {
+            background: var(--amber);
+            box-shadow: 0 0 12px rgba(255, 179, 0, 0.5)
+        }
+
+        @keyframes pulse {
+
+            0%,
+            100% {
+                box-shadow: 0 0 0 0 rgba(0, 136, 255, 0.4)
+            }
+
+            50% {
+                box-shadow: 0 0 0 8px rgba(0, 136, 255, 0)
+            }
+        }
+
+        .timeline-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-card);
+            border-radius: 14px;
+            padding: 28px 24px
+        }
+
+        .timeline-card .tc-status {
+            font-size: 11px;
+            font-weight: 700;
+            font-family: 'Fira Code', monospace;
+            letter-spacing: .1em;
+            margin-bottom: 8px
+        }
+
+        .timeline-card .tc-date {
+            font-size: 12px;
+            color: var(--text-dim);
+            margin-bottom: 12px
+        }
+
+        .timeline-card h4 {
+            font-family: 'Epilogue', sans-serif;
+            font-weight: 700;
+            font-size: 18px;
+            margin-bottom: 10px
+        }
+
+        .timeline-card p {
+            font-size: 14px;
+            color: var(--text-secondary);
+            line-height: 1.65
+        }
+
+        .timeline-card ul {
+            list-style: none;
+            margin-top: 10px;
+            display: flex;
+            flex-direction: column;
+            gap: 6px
+        }
+
+        .timeline-card ul li {
+            font-size: 13px;
+            color: var(--text-secondary);
+            display: flex;
+            align-items: flex-start;
+            gap: 8px
+        }
+
+        .timeline-card ul li::before {
+            content: '•';
+            color: var(--electric);
+            flex-shrink: 0
+        }
+
+        .timeline-card .jan-note {
+            margin-top: 12px;
+            font-style: italic;
+            font-size: 13px;
+            color: var(--text-dim);
+            border-top: 1px solid var(--divider);
+            padding-top: 12px
+        }
+
+        .timeline-card .industry-badges {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-top: 12px
+        }
+
+        .timeline-card .industry-badges span {
+            font-size: 12px;
+            padding: 4px 10px;
+            border-radius: 6px;
+            background: var(--bg-elevated);
+            border: 1px solid var(--border-card);
+            color: var(--text-secondary)
+        }
+
+        /* CHECKLISTS */
+        .checklists {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 20px;
+            max-width: 800px;
+            margin: 0 auto
+        }
+
+        .checklist-accordion {
+            background: var(--bg-card);
+            border: 1px solid var(--border-card);
+            border-radius: 14px;
+            overflow: hidden
+        }
+
+        .checklist-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px 24px;
+            cursor: pointer;
+            transition: background .2s
+        }
+
+        .checklist-header:hover {
+            background: var(--bg-elevated)
+        }
+
+        .checklist-header h4 {
+            font-family: 'Epilogue', sans-serif;
+            font-weight: 700;
+            font-size: 17px;
+            display: flex;
+            align-items: center;
+            gap: 10px
+        }
+
+        .checklist-header .chevron {
+            transition: transform .3s;
+            color: var(--text-dim);
+            font-size: 18px
+        }
+
+        .checklist-accordion.open .chevron {
+            transform: rotate(180deg)
+        }
+
+        .checklist-progress {
+            padding: 0 24px;
+            margin-bottom: 12px
+        }
+
+        .progress-bar {
+            height: 4px;
+            background: var(--bg-elevated);
+            border-radius: 4px;
+            overflow: hidden
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: var(--secure);
+            border-radius: 4px;
+            transition: width .4s ease
+        }
+
+        .progress-label {
+            font-size: 12px;
+            color: var(--text-dim);
+            margin-top: 6px;
+            font-family: 'Fira Code', monospace
+        }
+
+        .checklist-body {
+            padding: 0 24px 24px;
+            display: none
+        }
+
+        .checklist-accordion.open .checklist-body {
+            display: block
+        }
+
+        .check-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+            padding: 10px 0;
+            border-bottom: 1px solid var(--divider)
+        }
+
+        .check-item:last-child {
+            border-bottom: none
+        }
+
+        .check-item input[type="checkbox"] {
+            appearance: none;
+            width: 20px;
+            height: 20px;
+            border: 2px solid var(--text-dim);
+            border-radius: 4px;
+            flex-shrink: 0;
+            cursor: pointer;
+            position: relative;
+            transition: all .2s;
+            margin-top: 1px
+        }
+
+        .check-item input[type="checkbox"]:checked {
+            background: var(--secure);
+            border-color: var(--secure)
+        }
+
+        .check-item input[type="checkbox"]:checked::after {
+            content: '✓';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            color: #fff;
+            font-size: 12px;
+            font-weight: 700
+        }
+
+        .check-item label {
+            font-size: 14px;
+            color: var(--text-secondary);
+            cursor: pointer;
+            line-height: 1.5
+        }
+
+        .check-item input:checked+label {
+            color: var(--text-dim);
+            text-decoration: line-through
+        }
+
+        .checklist-actions {
+            display: flex;
+            gap: 12px;
+            justify-content: center;
+            margin-top: 32px
+        }
+
+        /* FOOTER */
+        .footer {
+            background: var(--bg-void);
+            border-top: 1px solid var(--border);
+            padding: 60px 0 32px
+        }
+
+        .footer-grid {
+            display: grid;
+            grid-template-columns: 2fr 1fr 1.5fr;
+            gap: 48px;
+            margin-bottom: 48px
+        }
+
+        .footer-brand .brand-name {
+            font-family: 'Epilogue', sans-serif;
+            font-weight: 800;
+            font-size: 20px;
+            margin-bottom: 8px
+        }
+
+        .footer-brand p {
+            font-size: 14px;
+            color: var(--text-dim);
+            line-height: 1.7
+        }
+
+        .footer-nav h5 {
+            font-family: 'Epilogue', sans-serif;
+            font-weight: 700;
+            font-size: 14px;
+            margin-bottom: 16px;
+            color: var(--text-primary)
+        }
+
+        .footer-nav a {
+            display: block;
+            font-size: 14px;
+            color: var(--text-secondary);
+            margin-bottom: 10px
+        }
+
+        .footer-nav a:hover {
+            color: var(--electric)
+        }
+
+        .footer-connect h5 {
+            font-family: 'Epilogue', sans-serif;
+            font-weight: 700;
+            font-size: 14px;
+            margin-bottom: 16px;
+            color: var(--text-primary)
+        }
+
+        .footer-connect .connect-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-card);
+            border-radius: 10px;
+            padding: 14px 16px;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            transition: border-color .2s
+        }
+
+        .footer-connect .connect-card:hover {
+            border-color: var(--electric-border)
+        }
+
+        .footer-connect .connect-card .cc-icon {
+            font-size: 20px
+        }
+
+        .footer-connect .connect-card .cc-text {
+            font-size: 13px;
+            color: var(--text-secondary)
+        }
+
+        .footer-connect .connect-card .cc-text strong {
+            color: var(--text-primary);
+            font-size: 14px;
+            display: block
+        }
+
+        .footer-bottom {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding-top: 24px;
+            border-top: 1px solid var(--divider);
+            flex-wrap: wrap;
+            gap: 12px
+        }
+
+        .footer-bottom span {
+            font-size: 13px;
+            color: var(--text-dim)
+        }
+
+        .footer-note {
+            text-align: center;
+            margin-top: 16px;
+            font-size: 13px;
+            color: var(--text-dim);
+            font-style: italic
+        }
+
+        /* RESPONSIVE */
+        @media(max-width:1024px) {
+            .services-grid {
+                grid-template-columns: repeat(2, 1fr)
+            }
+
+            .insight-cards,
+            .layer-cards,
+            .gdpr-steps {
+                grid-template-columns: repeat(2, 1fr)
+            }
+
+            .footer-grid {
+                grid-template-columns: 1fr 1fr
+            }
+        }
+
+        @media(max-width:768px) {
+            .nav-links {
+                display: none
+            }
+
+            .hamburger {
+                display: flex
+            }
+
+            .hero-content {
+                max-width: 100%;
+                padding: 0 5%
+            }
+
+            .hero-shield {
+                display: none
+            }
+
+            .hero-stats {
+                flex-wrap: wrap;
+                gap: 20px
+            }
+
+            .hero-stats .stat {
+                min-width: 100px
+            }
+
+            .resp-visual {
+                grid-template-columns: 1fr;
+                gap: 16px
+            }
+
+            .resp-divider {
+                flex-direction: row;
+                padding: 8px 0
+            }
+
+            .resp-divider::before {
+                display: none
+            }
+
+            .services-grid,
+            .insight-cards,
+            .layer-cards,
+            .gdpr-steps,
+            .iam-principles {
+                grid-template-columns: 1fr
+            }
+
+            .vpc-inner {
+                grid-template-columns: 1fr
+            }
+
+            .footer-grid {
+                grid-template-columns: 1fr
+            }
+
+            .footer-bottom {
+                flex-direction: column;
+                text-align: center
+            }
+
+            .hero-headline .line {
+                font-size: clamp(32px, 8vw, 48px)
+            }
+        }
+
+        @media(max-width:480px) {
+            .hero-stats {
+                gap: 16px
+            }
+
+            .hero-ctas {
+                flex-direction: column
+            }
+
+            .btn {
+                width: 100%;
+                justify-content: center
+            }
+
+            .filter-tabs {
+                gap: 6px
+            }
+
+            .filter-tab {
+                padding: 6px 14px;
+                font-size: 12px
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- NAVBAR -->
+    <nav class="navbar" id="navbar">
+        <div class="nav-brand">
+            <svg viewBox="0 0 24 24" fill="none" stroke="var(--electric)" stroke-width="2">
+                <path d="M12 2L3 7v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V7l-9-5z" />
+            </svg>
+            <span class="brand-name">CLOUDGUARD</span>
+            <span class="brand-sub">· Security Reference</span>
+        </div>
+        <div class="nav-links">
+            <a href="#responsibility">Responsibility</a>
+            <a href="#services">Services</a>
+            <a href="#iam">IAM</a>
+            <a href="#vpc">VPC</a>
+            <a href="#gdpr">GDPR</a>
+            <a href="#roadmap">Roadmap</a>
+            <a href="#checklist">Checklist</a>
+        </div>
+        <div class="nav-right">
+            <a class="gh-btn" href="https://github.com/JanSteve/cloudguard" target="_blank" rel="noopener">⭐ GitHub</a>
+            <a class="by-link" href="#footer">by Jan Steve</a>
+        </div>
+        <button class="hamburger" onclick="document.getElementById('mobileMenu').classList.add('open')"
+            aria-label="Open menu">
+            <span></span><span></span><span></span>
+        </button>
+    </nav>
+
+    <!-- MOBILE MENU -->
+    <div class="mobile-menu" id="mobileMenu">
+        <button class="close-btn" onclick="this.parentElement.classList.remove('open')"
+            aria-label="Close menu">&times;</button>
+        <a href="#responsibility" onclick="this.parentElement.classList.remove('open')">Responsibility</a>
+        <a href="#services" onclick="this.parentElement.classList.remove('open')">Services</a>
+        <a href="#iam" onclick="this.parentElement.classList.remove('open')">IAM</a>
+        <a href="#vpc" onclick="this.parentElement.classList.remove('open')">VPC</a>
+        <a href="#gdpr" onclick="this.parentElement.classList.remove('open')">GDPR</a>
+        <a href="#roadmap" onclick="this.parentElement.classList.remove('open')">Roadmap</a>
+        <a href="#checklist" onclick="this.parentElement.classList.remove('open')">Checklist</a>
+        <a class="gh-btn" href="https://github.com/JanSteve/cloudguard" target="_blank" rel="noopener">⭐ GitHub</a>
+    </div>
+
+    <!-- HERO -->
+    <section class="hero dot-bg" id="hero">
+        <div class="scan-line"></div>
+        <div class="scan-line"></div>
+        <div class="hero-shield" style="animation:floatShield 8s ease-in-out infinite">
+            <svg viewBox="0 0 200 240" fill="none">
+                <path class="shield-path" d="M100 10L20 50v60c0 46.25 32 89.5 80 100 48-10.5 80-53.75 80-100V50L100 10z"
+                    stroke="rgba(0,136,255,0.3)" stroke-width="2" fill="none" />
+                <text x="100" y="130" text-anchor="middle" fill="rgba(255,153,0,0.4)" font-family="Epilogue"
+                    font-size="28" font-weight="800">AWS</text>
+                <text x="100" y="160" text-anchor="middle" fill="rgba(0,136,255,0.3)" font-size="20">🔒</text>
+            </svg>
+        </div>
+        <div class="hero-content">
+            <div class="status-badge"><span class="pill">🟢 SECURE REFERENCE &nbsp;·&nbsp; FREE &nbsp;·&nbsp; OPEN
+                    SOURCE</span></div>
+            <h1 class="hero-headline">
+                <span class="line">AWS Cloud Security</span>
+                <span class="line">Reference Hub.</span>
+            </h1>
+            <p class="hero-sub">Everything you need to know about securing AWS infrastructure. IAM policies, VPC
+                architecture, GDPR compliance, and more. Built for the AWS Cloud Practitioner exam and beyond.</p>
+            <div class="hero-stats">
+                <div class="stat">
+                    <div class="num" data-target="12">0</div>
+                    <div class="label">AWS Security Services</div>
+                </div>
+                <div class="stat">
+                    <div class="num" data-target="7">0</div>
+                    <div class="label">Core Security Concepts</div>
+                </div>
+                <div class="stat">
+                    <div class="num" data-target="3">0</div>
+                    <div class="label">Compliance Frameworks</div>
+                </div>
+                <div class="stat">
+                    <div class="num" data-target="1">0</div>
+                    <div class="label">Free, Open Source</div>
+                </div>
+            </div>
+            <div class="hero-ctas">
+                <a href="#services" class="btn btn-primary">Explore Security Services →</a>
+                <a href="https://github.com/JanSteve/cloudguard" target="_blank" rel="noopener"
+                    class="btn btn-secondary">View on GitHub ↗</a>
+            </div>
+            <p class="hero-attr">Built by <a href="https://jan-steve-portfolio.vercel.app/" target="_blank"
+                    rel="noopener">R Jan Steve Daniel</a> · AWS Cloud Security Learner</p>
+        </div>
+        <div class="hero-chevron"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M6 9l6 6 6-6" />
+            </svg></div>
+    </section>
+    <!-- SHARED RESPONSIBILITY MODEL -->
+    <section class="section-pad" id="responsibility" style="background:var(--bg-stripe)">
+        <div class="container">
+            <div class="section-header">
+                <h2>AWS Shared Responsibility Model</h2>
+                <p>The foundational principle of cloud security.</p>
+            </div>
+            <div class="resp-visual">
+                <div class="resp-half aws-side fade-left">
+                    <div class="resp-label" style="color:var(--secure)">🟢 AWS Manages This</div>
+                    <div class="resp-sublabel">Security OF the Cloud</div>
+                    <div class="resp-item"><span class="ri-icon">🖥️</span>
+                        <div>
+                            <div class="ri-title">Physical Hardware &amp; Data Centers</div>
+                            <div class="ri-desc">AWS secures the physical buildings, servers, and networking equipment
+                                across its global regions.</div>
+                        </div>
+                    </div>
+                    <div class="resp-item"><span class="ri-icon">🌐</span>
+                        <div>
+                            <div class="ri-title">Network Infrastructure</div>
+                            <div class="ri-desc">The underlying network between data centers, availability zones, and
+                                regions is entirely AWS-managed.</div>
+                        </div>
+                    </div>
+                    <div class="resp-item"><span class="ri-icon">🔌</span>
+                        <div>
+                            <div class="ri-title">Hypervisor &amp; Virtualization</div>
+                            <div class="ri-desc">The software that creates and manages virtual machines runs on AWS
+                                hardware
+                                and is patched by AWS.</div>
+                        </div>
+                    </div>
+                    <div class="resp-item"><span class="ri-icon">🏢</span>
+                        <div>
+                            <div class="ri-title">AWS Global Infrastructure</div>
+                            <div class="ri-desc">Regions, Availability Zones, and Edge Locations are designed and
+                                maintained
+                                for reliability and security.</div>
+                        </div>
+                    </div>
+                    <div class="resp-item"><span class="ri-icon">🛡️</span>
+                        <div>
+                            <div class="ri-title">Managed Service Internals</div>
+                            <div class="ri-desc">Services like S3 and RDS — AWS handles the operating system and
+                                platform
+                                patches internally.</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="resp-divider"><span class="div-label">YOU &amp; AWS</span></div>
+                <div class="resp-half cust-side fade-right">
+                    <div class="resp-label" style="color:var(--electric)">🔵 You Manage This</div>
+                    <div class="resp-sublabel">Security IN the Cloud</div>
+                    <div class="resp-item"><span class="ri-icon">🔑</span>
+                        <div>
+                            <div class="ri-title">IAM Users, Roles &amp; Permissions</div>
+                            <div class="ri-desc">You decide who can access your AWS account and what they can do.</div>
+                        </div>
+                    </div>
+                    <div class="resp-item"><span class="ri-icon">🗄️</span>
+                        <div>
+                            <div class="ri-title">Data Encryption</div>
+                            <div class="ri-desc">Encrypting your data at rest and in transit is your responsibility —
+                                AWS
+                                provides the tools (KMS).</div>
+                        </div>
+                    </div>
+                    <div class="resp-item"><span class="ri-icon">🌐</span>
+                        <div>
+                            <div class="ri-title">VPC &amp; Security Groups</div>
+                            <div class="ri-desc">Configuring your virtual private cloud, firewalls, and network access
+                                controls is on you.</div>
+                        </div>
+                    </div>
+                    <div class="resp-item"><span class="ri-icon">💻</span>
+                        <div>
+                            <div class="ri-title">OS Patching (EC2)</div>
+                            <div class="ri-desc">When you run EC2, you're responsible for keeping the operating system
+                                updated and secure.</div>
+                        </div>
+                    </div>
+                    <div class="resp-item"><span class="ri-icon">🔧</span>
+                        <div>
+                            <div class="ri-title">Application Security</div>
+                            <div class="ri-desc">Your application code, dependencies, and configurations must be secured
+                                by
+                                you.</div>
+                        </div>
+                    </div>
+                    <div class="resp-item"><span class="ri-icon">📋</span>
+                        <div>
+                            <div class="ri-title">Data Classification &amp; Compliance</div>
+                            <div class="ri-desc">Classifying your data, meeting regulatory requirements, and ensuring
+                                compliance is your job.</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="insight-cards">
+                <div class="insight-card fade-in">
+                    <div class="ic-icon">💡</div>
+                    <h4 class="ic-title" style="color:var(--amber)">The Rule of Thumb</h4>
+                    <p class="ic-text">AWS secures the infrastructure. You secure everything you build ON it. If you can
+                        configure it in the AWS console, it's probably your responsibility.</p>
+                </div>
+                <div class="insight-card fade-in">
+                    <div class="ic-icon">📋</div>
+                    <h4 class="ic-title" style="color:var(--electric)">Exam Focus</h4>
+                    <p class="ic-text">This is one of the most tested concepts on the AWS Cloud Practitioner exam.
+                        Understand the boundary — hardware is always AWS, your data is always you.</p>
+                </div>
+                <div class="insight-card fade-in">
+                    <div class="ic-icon">🏦</div>
+                    <h4 class="ic-title" style="color:var(--secure)">Enterprise Reality</h4>
+                    <p class="ic-text">In the financial sector, auditors ask about this model constantly.
+                        Understanding it shows security maturity beyond most candidates.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- AWS SECURITY SERVICES -->
+    <section class="section-pad" id="services" style="background:var(--bg-deep)">
+        <div class="container">
+            <div class="section-header">
+                <h2>12 AWS Security Services</h2>
+                <p>Every security tool you need to know — explained without jargon.</p>
+            </div>
+            <div class="filter-tabs">
+                <button class="filter-tab active" data-filter="all">All</button>
+                <button class="filter-tab" data-filter="identity">Identity</button>
+                <button class="filter-tab" data-filter="detection">Detection</button>
+                <button class="filter-tab" data-filter="protection">Protection</button>
+                <button class="filter-tab" data-filter="compliance">Compliance</button>
+                <button class="filter-tab" data-filter="encryption">Encryption</button>
+            </div>
+            <div class="services-grid">
+
+                <div class="service-card cat-identity fade-in" data-category="identity">
+                    <div class="sc-top">
+                        <div class="sc-icon identity">🔑</div><span class="sc-cat identity">Identity</span>
+                    </div>
+                    <div class="sc-name">AWS IAM</div>
+                    <div class="sc-tagline">AWS's gatekeeper for who can do what.</div>
+                    <div class="sc-divider"></div>
+                    <div class="sc-desc">Controls who can access what in your AWS account. Every API call, every login,
+                        every permission — IAM decides if it's allowed. Without IAM, there is no cloud security.</div>
+                    <div class="sc-analogy"><span class="analogy-icon">💡</span> Think of IAM like a hotel key card
+                        system —
+                        different cards open different doors, and the front desk (AWS) decides who gets what.</div>
+                    <ul class="sc-uses">
+                        <li>Controlling developer access to production</li>
+                        <li>Granting EC2 instances access to S3</li>
+                        <li>Enforcing multi-factor authentication</li>
+                    </ul>
+                    <div class="sc-exam">Cloud Practitioner: ⭐⭐⭐</div>
+                </div>
+
+                <div class="service-card cat-identity fade-in" data-category="identity">
+                    <div class="sc-top">
+                        <div class="sc-icon identity">👤</div><span class="sc-cat identity">Identity</span>
+                    </div>
+                    <div class="sc-name">AWS Cognito</div>
+                    <div class="sc-tagline">Sign-in for your apps, powered by AWS.</div>
+                    <div class="sc-divider"></div>
+                    <div class="sc-desc">Adds login and signup features to your applications. Supports "Sign in with
+                        Google/Facebook" and manages user pools. You don't have to build authentication from scratch.
+                    </div>
+                    <div class="sc-analogy"><span class="analogy-icon">💡</span> The bouncer at a club who checks IDs
+                        for
+                        your application — only lets in verified users.</div>
+                    <ul class="sc-uses">
+                        <li>Adding login to a web or mobile app</li>
+                        <li>Implementing social sign-in (Google, Facebook)</li>
+                    </ul>
+                    <div class="sc-exam">Cloud Practitioner: ⭐⭐</div>
+                </div>
+
+                <div class="service-card cat-detection fade-in" data-category="detection">
+                    <div class="sc-top">
+                        <div class="sc-icon detection">👁️</div><span class="sc-cat detection">Detection</span>
+                    </div>
+                    <div class="sc-name">AWS GuardDuty</div>
+                    <div class="sc-tagline">Your 24/7 threat radar.</div>
+                    <div class="sc-divider"></div>
+                    <div class="sc-desc">Continuously monitors your AWS account for suspicious activity and threats,
+                        24/7,
+                        without you doing anything. Uses machine learning to detect unusual API calls, unauthorized
+                        deployments, and compromised instances.</div>
+                    <div class="sc-analogy"><span class="analogy-icon">💡</span> A security guard who never sleeps,
+                        watching
+                        all your cameras and raising the alarm if anything looks wrong.</div>
+                    <ul class="sc-uses">
+                        <li>Detecting unauthorized access attempts</li>
+                        <li>Finding compromised EC2 instances</li>
+                        <li>Monitoring for cryptocurrency mining attacks</li>
+                    </ul>
+                    <div class="sc-exam">Cloud Practitioner: ⭐⭐⭐</div>
+                </div>
+
+                <div class="service-card cat-detection fade-in" data-category="detection">
+                    <div class="sc-top">
+                        <div class="sc-icon detection">📝</div><span class="sc-cat detection">Detection</span>
+                    </div>
+                    <div class="sc-name">AWS CloudTrail</div>
+                    <div class="sc-tagline">The CCTV footage of your AWS account.</div>
+                    <div class="sc-divider"></div>
+                    <div class="sc-desc">Records every single action taken in your AWS account — who did what, when, and
+                        from where. Essential for auditing, compliance investigations, and understanding security
+                        incidents.
+                    </div>
+                    <div class="sc-analogy"><span class="analogy-icon">💡</span> Think of CloudTrail as the CCTV footage
+                        of
+                        your entire AWS account — you can always rewind and see exactly what happened.</div>
+                    <ul class="sc-uses">
+                        <li>Investigating security incidents after the fact</li>
+                        <li>Meeting compliance audit requirements</li>
+                        <li>Tracking who made configuration changes</li>
+                    </ul>
+                    <div class="sc-exam">Cloud Practitioner: ⭐⭐⭐</div>
+                </div>
+
+                <div class="service-card cat-detection fade-in" data-category="detection">
+                    <div class="sc-top">
+                        <div class="sc-icon detection">🎛️</div><span class="sc-cat detection">Detection</span>
+                    </div>
+                    <div class="sc-name">AWS Security Hub</div>
+                    <div class="sc-tagline">One screen to rule all your alerts.</div>
+                    <div class="sc-divider"></div>
+                    <div class="sc-desc">A single dashboard that collects security alerts from ALL your AWS security
+                        services in one place. Aggregates findings from GuardDuty, Inspector, Macie, and third-party
+                        tools
+                        into a unified view.</div>
+                    <div class="sc-analogy"><span class="analogy-icon">💡</span> The central security operations center
+                        screen that shows all cameras, sensors, and alarms at once.</div>
+                    <ul class="sc-uses">
+                        <li>Getting a unified view of your security posture</li>
+                        <li>Prioritizing which security alerts to handle first</li>
+                    </ul>
+                    <div class="sc-exam">Cloud Practitioner: ⭐⭐</div>
+                </div>
+
+                <div class="service-card cat-detection fade-in" data-category="detection">
+                    <div class="sc-top">
+                        <div class="sc-icon detection">🔍</div><span class="sc-cat detection">Detection</span>
+                    </div>
+                    <div class="sc-name">Amazon Inspector</div>
+                    <div class="sc-tagline">Automated vulnerability scanner.</div>
+                    <div class="sc-divider"></div>
+                    <div class="sc-desc">Automatically scans your EC2 instances and container images for software
+                        vulnerabilities and unintended network exposure. Finds problems before attackers do — without
+                        you
+                        running anything manually.</div>
+                    <div class="sc-analogy"><span class="analogy-icon">💡</span> An automated IT health check that
+                        examines
+                        every server and tells you exactly what needs fixing.</div>
+                    <ul class="sc-uses">
+                        <li>Finding unpatched software on EC2 instances</li>
+                        <li>Scanning container images before deployment</li>
+                    </ul>
+                    <div class="sc-exam">Cloud Practitioner: ⭐⭐</div>
+                </div>
+
+                <div class="service-card cat-protection fade-in" data-category="protection">
+                    <div class="sc-top">
+                        <div class="sc-icon protection">🧱</div><span class="sc-cat protection">Protection</span>
+                    </div>
+                    <div class="sc-name">AWS WAF</div>
+                    <div class="sc-tagline">Your web application's first line of defense.</div>
+                    <div class="sc-divider"></div>
+                    <div class="sc-desc">Filters malicious web traffic before it reaches your application. Blocks SQL
+                        injection, cross-site scripting (XSS), and common DDoS patterns using customizable rules.</div>
+                    <div class="sc-analogy"><span class="analogy-icon">💡</span> A bouncer who checks every visitor at
+                        the
+                        door — suspicious requests are turned away before they enter.</div>
+                    <ul class="sc-uses">
+                        <li>Protecting web apps from SQL injection and XSS</li>
+                        <li>Rate-limiting aggressive bots</li>
+                    </ul>
+                    <div class="sc-exam">Cloud Practitioner: ⭐⭐</div>
+                </div>
+
+                <div class="service-card cat-protection fade-in" data-category="protection">
+                    <div class="sc-top">
+                        <div class="sc-icon protection">🛡️</div><span class="sc-cat protection">Protection</span>
+                    </div>
+                    <div class="sc-name">AWS Shield</div>
+                    <div class="sc-tagline">DDoS protection — free and always on.</div>
+                    <div class="sc-divider"></div>
+                    <div class="sc-desc">Protects your AWS resources from DDoS attacks. Shield Standard is free and
+                        automatic for all AWS customers. Shield Advanced adds real-time attack visibility and 24/7 DDoS
+                        response team access.</div>
+                    <div class="sc-analogy"><span class="analogy-icon">💡</span> A riot shield that absorbs waves of
+                        attack
+                        traffic so your application stays online and responsive.</div>
+                    <ul class="sc-uses">
+                        <li>Automatic DDoS protection (Standard — free)</li>
+                        <li>Advanced protection for mission-critical apps</li>
+                        <li>Cost protection during DDoS attacks</li>
+                    </ul>
+                    <div class="sc-exam">Cloud Practitioner: ⭐⭐⭐</div>
+                </div>
+
+                <div class="service-card cat-protection fade-in" data-category="protection">
+                    <div class="sc-top">
+                        <div class="sc-icon protection">🔥</div><span class="sc-cat protection">Protection</span>
+                    </div>
+                    <div class="sc-name">AWS Network Firewall</div>
+                    <div class="sc-tagline">Inspect and filter all VPC traffic.</div>
+                    <div class="sc-divider"></div>
+                    <div class="sc-desc">A managed firewall that inspects and filters network traffic flowing in and out
+                        of
+                        your VPC. Deep packet inspection, intrusion prevention, and web filtering — all without managing
+                        hardware.</div>
+                    <div class="sc-analogy"><span class="analogy-icon">💡</span> Airport security that checks everyone
+                        entering or leaving the country — scanning for prohibited items.</div>
+                    <ul class="sc-uses">
+                        <li>Filtering outbound traffic to block data exfiltration</li>
+                        <li>Inspecting inbound traffic for known threats</li>
+                    </ul>
+                    <div class="sc-exam">Cloud Practitioner: ⭐</div>
+                </div>
+
+                <div class="service-card cat-compliance fade-in" data-category="compliance">
+                    <div class="sc-top">
+                        <div class="sc-icon compliance">📋</div><span class="sc-cat compliance">Compliance</span>
+                    </div>
+                    <div class="sc-name">AWS Config</div>
+                    <div class="sc-tagline">Know when anything changes.</div>
+                    <div class="sc-divider"></div>
+                    <div class="sc-desc">Tracks how your AWS resource configurations change over time. Did someone
+                        remove
+                        encryption from an S3 bucket? Did someone open a security group to 0.0.0.0/0? AWS Config knows
+                        and
+                        can alert you immediately.</div>
+                    <div class="sc-analogy"><span class="analogy-icon">💡</span> A compliance auditor who watches your
+                        settings 24/7 and raises a red flag the moment something changes.</div>
+                    <ul class="sc-uses">
+                        <li>Tracking configuration drift from compliance baselines</li>
+                        <li>Automated remediation of non-compliant resources</li>
+                    </ul>
+                    <div class="sc-exam">Cloud Practitioner: ⭐⭐</div>
+                </div>
+
+                <div class="service-card cat-compliance fade-in" data-category="compliance">
+                    <div class="sc-top">
+                        <div class="sc-icon compliance">📂</div><span class="sc-cat compliance">Compliance</span>
+                    </div>
+                    <div class="sc-name">AWS Artifact</div>
+                    <div class="sc-tagline">AWS's compliance certificate library.</div>
+                    <div class="sc-divider"></div>
+                    <div class="sc-desc">Provides on-demand access to AWS compliance reports — ISO 27001, SOC 2, GDPR,
+                        PCI-DSS, and more. When an auditor asks "prove AWS meets X standard," this is where you go.
+                    </div>
+                    <div class="sc-analogy"><span class="analogy-icon">💡</span> A library of certificates that prove
+                        AWS
+                        meets regulatory standards — hand them to your auditor and move on.</div>
+                    <ul class="sc-uses">
+                        <li>Providing compliance proof to auditors</li>
+                        <li>Downloading GDPR compliance documentation</li>
+                        <li>Supporting financial regulatory requirements</li>
+                    </ul>
+                    <div class="sc-exam">Cloud Practitioner: ⭐⭐⭐</div>
+                </div>
+
+                <div class="service-card cat-encryption fade-in" data-category="encryption">
+                    <div class="sc-top">
+                        <div class="sc-icon encryption">🗝️</div><span class="sc-cat encryption">Encryption</span>
+                    </div>
+                    <div class="sc-name">AWS KMS</div>
+                    <div class="sc-tagline">The keymaster of your cloud kingdom.</div>
+                    <div class="sc-divider"></div>
+                    <div class="sc-desc">Creates and manages the encryption keys that protect your data. Almost every
+                        AWS
+                        service that encrypts data — S3, RDS, EBS, Lambda — uses KMS underneath. Central key management
+                        for
+                        your entire cloud.</div>
+                    <div class="sc-analogy"><span class="analogy-icon">💡</span> The keymaster who controls all the
+                        locks in
+                        your building — without them, nobody can encrypt or decrypt anything.</div>
+                    <ul class="sc-uses">
+                        <li>Encrypting data in S3, RDS, and EBS</li>
+                        <li>Managing encryption key rotation</li>
+                        <li>Meeting GDPR encryption requirements</li>
+                    </ul>
+                    <div class="sc-exam">Cloud Practitioner: ⭐⭐⭐</div>
+                </div>
+
+            </div>
+        </div>
+    </section><!-- IAM DEEP DIVE -->
+    <section class="section-pad" id="iam" style="background:var(--bg-stripe)">
+        <div class="container">
+            <div class="section-header">
+                <h2>Identity &amp; Access Management</h2>
+                <p>The most important security service in AWS. Master this first.</p>
+                <div style="margin-top:12px"><span class="pill"
+                        style="border:1px solid rgba(255,179,0,0.3);background:var(--amber-bg);color:var(--amber)">⭐⭐⭐
+                        EXAM
+                        CRITICAL</span></div>
+            </div>
+
+            <div class="iam-pyramid fade-in">
+                <div class="pyramid-layer"
+                    style="background:var(--alert-bg);border:1px solid rgba(255,61,61,0.2);width:100%">
+                    <span class="pl-badge"
+                        style="background:var(--alert-bg);color:var(--alert);border:1px solid rgba(255,61,61,0.3)">ROOT</span>
+                    <div>
+                        <div class="pl-title">Root User <span style="color:var(--alert);font-size:13px">⚠️ Never use for
+                                daily work</span></div>
+                        <div class="pl-desc">Full account access. Cannot be restricted. The master key to everything.
+                        </div>
+                    </div>
+                </div>
+                <div class="pyramid-layer"
+                    style="background:var(--electric-bg);border:1px solid var(--electric-border);width:88%;margin:0 auto">
+                    <span class="pl-badge"
+                        style="background:var(--electric-bg);color:var(--electric);border:1px solid var(--electric-border)">USERS</span>
+                    <div>
+                        <div class="pl-title">IAM Users</div>
+                        <div class="pl-desc">Individual people. Permanent credentials. Each person gets their own login.
+                        </div>
+                    </div>
+                </div>
+                <div class="pyramid-layer"
+                    style="background:rgba(0,191,165,0.07);border:1px solid rgba(0,191,165,0.2);width:76%;margin:0 auto">
+                    <span class="pl-badge"
+                        style="background:rgba(0,191,165,0.07);color:var(--teal);border:1px solid rgba(0,191,165,0.3)">GROUPS</span>
+                    <div>
+                        <div class="pl-title">IAM Groups</div>
+                        <div class="pl-desc">Collections of users sharing the same permissions. Manage access at scale.
+                        </div>
+                    </div>
+                </div>
+                <div class="pyramid-layer"
+                    style="background:var(--secure-bg);border:1px solid var(--secure-border);width:64%;margin:0 auto">
+                    <span class="pl-badge"
+                        style="background:var(--secure-bg);color:var(--secure);border:1px solid var(--secure-border)">ROLES</span>
+                    <div>
+                        <div class="pl-title">IAM Roles</div>
+                        <div class="pl-desc">Temporary access. Best practice for applications and cross-account access.
+                        </div>
+                    </div>
+                </div>
+                <div class="pyramid-layer"
+                    style="background:rgba(156,39,176,0.07);border:1px solid rgba(156,39,176,0.2);width:52%;margin:0 auto">
+                    <span class="pl-badge"
+                        style="background:rgba(156,39,176,0.07);color:var(--purple);border:1px solid rgba(156,39,176,0.3)">POLICIES</span>
+                    <div>
+                        <div class="pl-title">IAM Policies</div>
+                        <div class="pl-desc">JSON rules that define exactly what is allowed or denied.</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="iam-principles">
+                <div class="iam-card fade-in">
+                    <div class="ic-header"><span>🎯</span><span class="badge"
+                            style="background:var(--electric-bg);color:var(--electric);border:1px solid var(--electric-border)">CRITICAL
+                            PRINCIPLE</span></div>
+                    <h4>Principle of Least Privilege</h4>
+                    <p>Give every user and system ONLY the permissions they need — nothing more. A developer who deploys
+                        code should not have access to billing information. Start with zero permissions and add only
+                        what's
+                        required.</p>
+                </div>
+                <div class="iam-card fade-in">
+                    <div class="ic-header"><span>⚠️</span><span class="badge"
+                            style="background:var(--alert-bg);color:var(--alert);border:1px solid rgba(255,61,61,0.3)">EXAM
+                            FAVOURITE</span></div>
+                    <h4>Never Use Root for Daily Work</h4>
+                    <p>The AWS root account is like the master key to your entire cloud infrastructure. Create IAM users
+                        for
+                        all daily tasks. Use root only to create your first IAM admin — then lock it away and enable
+                        MFA.
+                    </p>
+                </div>
+                <div class="iam-card fade-in">
+                    <div class="ic-header"><span>📱</span><span class="badge"
+                            style="background:var(--secure-bg);color:var(--secure);border:1px solid var(--secure-border)">BEST
+                            PRACTICE</span></div>
+                    <h4>Enable MFA Everywhere</h4>
+                    <p>Multi-Factor Authentication adds a second verification step. Even if someone steals your
+                        password,
+                        they cannot log in without your phone. Enable it on root and all admin accounts — it's free and
+                        takes 2 minutes.</p>
+                </div>
+                <div class="iam-card fade-in">
+                    <div class="ic-header"><span>🔄</span><span class="badge"
+                            style="background:var(--amber-bg);color:var(--amber);border:1px solid rgba(255,179,0,0.3)">PROFESSIONAL
+                            PRACTICE</span></div>
+                    <h4>Use Roles for Applications</h4>
+                    <p>When an EC2 server needs to access S3, don't give it a username and password. Assign an IAM Role
+                        —
+                        temporary, automatic, and far more secure than stored credentials that could be leaked.</p>
+                </div>
+            </div>
+
+            <div class="policy-block fade-in">
+                <div class="code-header"><span>example-iam-policy.json</span><button class="copy-btn"
+                        onclick="copyPolicy(this)">📋 Copy</button></div>
+                <div class="policy-code">
+                    <pre>{
+  <span class="key">"Version"</span><span class="punct">:</span> <span class="str">"2012-10-17"</span><span class="punct">,</span>
+  <span class="key">"Statement"</span><span class="punct">:</span> <span class="punct">[{</span>
+    <span class="key">"Effect"</span><span class="punct">:</span> <span class="str">"Allow"</span><span class="punct">,</span>
+    <span class="key">"Action"</span><span class="punct">:</span> <span class="punct">[</span>
+      <span class="str">"s3:GetObject"</span><span class="punct">,</span>
+      <span class="str">"s3:PutObject"</span>
+    <span class="punct">],</span>
+    <span class="key">"Resource"</span><span class="punct">:</span> <span class="str">"arn:aws:s3:::my-company-bucket/*"</span>
+  <span class="punct">}]</span>
+}</pre>
+                </div>
+                <p class="policy-label">This policy allows reading and writing files to ONE specific S3 bucket — nothing
+                    else. This is least privilege in practice.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- VPC SECURITY -->
+    <section class="section-pad" id="vpc" style="background:var(--bg-deep)">
+        <div class="container">
+            <div class="section-header">
+                <h2>VPC Security Architecture</h2>
+                <p>Your private network inside AWS — and how to protect it.</p>
+            </div>
+
+            <div class="vpc-diagram fade-in">
+                <span class="vpc-label">☁️ AWS Cloud</span>
+                <div class="vpc-inner">
+                    <span class="vi-label">Your VPC (10.0.0.0/16)</span>
+                    <div class="subnet public">
+                        <h4 style="color:var(--electric)">🌐 Public Subnet</h4>
+                        <div class="sub-desc">Accessible from the internet</div>
+                        <div class="subnet-item"><span class="si-icon">🌍</span><span class="si-name">Internet
+                                Gateway</span></div>
+                        <div class="subnet-item"><span class="si-icon">⚖️</span><span class="si-name">Application Load
+                                Balancer</span></div>
+                        <div class="subnet-item"><span class="si-icon">🔀</span><span class="si-name">NAT Gateway</span>
+                        </div>
+                    </div>
+                    <div class="subnet private">
+                        <h4 style="color:var(--secure)">🔒 Private Subnet</h4>
+                        <div class="sub-desc">No direct internet access</div>
+                        <div class="subnet-item"><span class="si-icon">💻</span><span class="si-name">Application Server
+                                (EC2)</span></div>
+                        <div class="subnet-item"><span class="si-icon">🗄️</span><span class="si-name">Database
+                                (RDS)</span>
+                        </div>
+                        <div class="subnet-item"><span class="si-icon">📦</span><span class="si-name">Cache
+                                (ElastiCache)</span></div>
+                    </div>
+                </div>
+                <div class="vpc-layers">
+                    <div class="vpc-layer-badge">🔒 Security Groups — per resource</div>
+                    <div class="vpc-layer-badge">🧱 Network ACLs — per subnet</div>
+                    <div class="vpc-layer-badge">🛡️ WAF — in front of Load Balancer</div>
+                </div>
+            </div>
+
+            <div class="layer-cards">
+                <div class="layer-card fade-in">
+                    <h4>🔒 Security Groups</h4>
+                    <p>The firewall built around each individual AWS resource. Acts like a personal bodyguard for each
+                        EC2
+                        instance or RDS database. STATEFUL: if you allow inbound, the response is automatically allowed
+                        out.
+                    </p>
+                    <p><strong style="color:var(--secure)">DEFAULT: Deny everything</strong> unless you explicitly
+                        create an
+                        allow rule.</p>
+                    <div class="analogy">💡 A bouncer assigned to each specific person — they only let through what's on
+                        the
+                        approved list.</div>
+                </div>
+                <div class="layer-card fade-in">
+                    <h4>🧱 Network ACLs</h4>
+                    <p>The firewall at the subnet level — one layer outside Security Groups. Controls traffic entering
+                        or
+                        leaving an entire subnet, not just one resource.</p>
+                    <p><strong style="color:var(--amber)">STATELESS:</strong> you must explicitly allow both inbound AND
+                        outbound traffic separately.</p>
+                    <div class="analogy">💡 Border control at the entrance to an entire neighbourhood — checking
+                        everyone
+                        who enters and leaves.</div>
+                </div>
+                <div class="layer-card fade-in">
+                    <h4>🛡️ Defense in Depth</h4>
+                    <p>Real security uses MULTIPLE layers — WAF → NACL → Security Group. Even if one layer is
+                        misconfigured,
+                        the others still protect you. This is the core principle of enterprise cloud security.</p>
+                    <p><strong style="color:var(--electric)">Always use all layers together.</strong></p>
+                    <div class="analogy">💡 A bank vault with a guard outside, a locked door, a keypad, and the vault
+                        itself
+                        — multiple barriers, maximum protection.</div>
+                </div>
+            </div>
+        </div>
+    </section><!-- GDPR & COMPLIANCE -->
+    <section class="section-pad" id="gdpr" style="background:var(--bg-stripe)">
+        <div class="container">
+            <div class="section-header">
+                <h2>GDPR &amp; Cloud Compliance on AWS</h2>
+                <p>Why European cloud security is different — and why AWS is built for it. 🇪🇺</p>
+            </div>
+
+            <div class="gdpr-steps">
+                <div class="gdpr-step fade-in">
+                    <div class="step-num">1</div>
+                    <h4>What GDPR Is</h4>
+                    <p>The General Data Protection Regulation (GDPR) is the EU law that governs how personal data is
+                        collected, stored, and processed. It applies to ANY company handling data of EU residents —
+                        regardless of where that company is located.</p>
+                    <p style="margin-top:12px;color:var(--alert);font-weight:500">Fines: up to €20 million or 4% of
+                        global
+                        annual revenue, whichever is higher.</p>
+                </div>
+                <div class="gdpr-step fade-in">
+                    <div class="step-num">2</div>
+                    <h4>How It Affects AWS Architecture</h4>
+                    <p>Where you store data matters. Storing EU customer data in us-east-1 (Virginia) can violate GDPR.
+                        Best
+                        practice:</p>
+                    <ul>
+                        <li>Use eu-west-3 (Paris) or eu-central-1 (Frankfurt) for EU data</li>
+                        <li>AWS provides data residency controls to keep data in specific regions</li>
+                        <li>Configure S3 bucket policies to enforce region restrictions</li>
+                    </ul>
+                </div>
+                <div class="gdpr-step fade-in">
+                    <div class="step-num">3</div>
+                    <h4>AWS Tools for GDPR</h4>
+                    <ul>
+                        <li><strong>AWS Artifact</strong> — Download GDPR compliance certificates</li>
+                        <li><strong>AWS Config</strong> — Prove configs haven't changed since audit</li>
+                        <li><strong>CloudTrail</strong> — Full audit log of every action (required by GDPR)</li>
+                        <li><strong>AWS KMS</strong> — Encrypt personal data (GDPR requires this)</li>
+                        <li><strong>Amazon Macie</strong> — Auto-discover &amp; protect personal data in S3</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div style="overflow-x:auto;margin-bottom:48px">
+                <table class="gdpr-table">
+                    <thead>
+                        <tr>
+                            <th>GDPR Principle</th>
+                            <th>AWS Implementation</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Data Minimisation</td>
+                            <td>IAM policies limit who can access which data — principle of least privilege</td>
+                        </tr>
+                        <tr>
+                            <td>Purpose Limitation</td>
+                            <td>S3 bucket policies restrict data access per use case and application</td>
+                        </tr>
+                        <tr>
+                            <td>Storage Limitation</td>
+                            <td>S3 Lifecycle rules automatically delete data after retention period expires</td>
+                        </tr>
+                        <tr>
+                            <td>Integrity &amp; Confidentiality</td>
+                            <td>KMS encryption at rest + TLS in transit + CloudTrail audit logs</td>
+                        </tr>
+                        <tr>
+                            <td>Accountability</td>
+                            <td>AWS Artifact compliance reports + CloudTrail audit trail = full accountability</td>
+                        </tr>
+                        <tr>
+                            <td>Right to Erasure</td>
+                            <td>S3 Object Delete + RDS record removal procedures for "right to be forgotten"</td>
+                        </tr>
+                        <tr>
+                            <td>Data Portability</td>
+                            <td>AWS Data Export tools + S3 APIs for structured data extraction</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="lux-callout fade-in">
+                <h4>🇪🇺 European Cloud Security</h4>
+                <p>Europe hosts some of the world's most regulated financial markets, with strict data protection
+                    requirements that every cloud professional must understand.</p>
+                <p style="margin-top:12px">AWS professionals working with European clients must understand:
+                    <strong>GDPR</strong>, <strong>NIS2 Directive</strong>, and the
+                    EU's <strong>DORA regulation</strong> (Digital Operational Resilience Act).
+                </p>
+                <p style="margin-top:12px">Understanding these frameworks places you ahead of most cloud professionals.
+                    The intersection of cloud security knowledge and European regulatory
+                    awareness is extremely rare — and extremely valuable.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- CERTIFICATION ROADMAP -->
+    <section class="section-pad" id="roadmap" style="background:var(--bg-deep)">
+        <div class="container">
+            <div class="section-header">
+                <h2>AWS Security Certification Path</h2>
+                <p>From Cloud Practitioner to Security Specialist — my roadmap.</p>
+            </div>
+
+            <div class="timeline">
+                <div class="timeline-item fade-in">
+                    <div class="timeline-dot active"></div>
+                    <div class="timeline-card"
+                        style="border-color:var(--electric-border);background:var(--electric-bg)">
+                        <div class="tc-status" style="color:var(--electric)">🔵 IN PROGRESS</div>
+                        <div class="tc-date">Target: Q3 2026</div>
+                        <h4>AWS Cloud Practitioner</h4>
+                        <p>The foundational AWS certification. Proves you understand cloud fundamentals — AWS services,
+                            pricing, security basics, and the Shared Responsibility Model. This is the gateway to every
+                            AWS
+                            career path.</p>
+                        <ul>
+                            <li>Shared Responsibility Model (heavily tested)</li>
+                            <li>IAM basics — users, groups, roles, policies</li>
+                            <li>AWS Shield and WAF overview</li>
+                            <li>CloudTrail and CloudWatch</li>
+                            <li>Compliance and AWS Artifact</li>
+                        </ul>
+                        <div class="jan-note">"I'm studying this now. My approach: AWS official study guide + practice
+                            exams
+                            on Tutorials Dojo. The security domain is worth 25% of the exam — this site covers it all."
+                        </div>
+                    </div>
+                </div>
+
+                <div class="timeline-item fade-in">
+                    <div class="timeline-dot planned"></div>
+                    <div class="timeline-card">
+                        <div class="tc-status" style="color:var(--text-dim)">⬜ PLANNED</div>
+                        <div class="tc-date">Target: 2027</div>
+                        <h4>AWS Security Specialty</h4>
+                        <p>The most respected AWS security certification. Proves deep expertise in incident response,
+                            infrastructure security, identity management, and data protection on AWS. This is the
+                            certification that enterprise employers want to see.</p>
+                    </div>
+                </div>
+
+                <div class="timeline-item fade-in">
+                    <div class="timeline-dot planned" style="border-color:var(--amber)"></div>
+                    <div class="timeline-card">
+                        <div class="tc-status" style="color:var(--amber)">📚 PLANNED</div>
+                        <div class="tc-date">2026–2027</div>
+                        <h4>Advanced Cloud Security Studies</h4>
+                        <p>Deepening knowledge in cloud computing, cloud security architecture, and data protection
+                            frameworks. Building the academic and professional base for cloud security specialisation.
+                        </p>
+                    </div>
+                </div>
+
+                <div class="timeline-item fade-in">
+                    <div class="timeline-dot goal"></div>
+                    <div class="timeline-card" style="border-color:rgba(255,179,0,0.3)">
+                        <div class="tc-status" style="color:var(--amber)">🌟 THE GOAL</div>
+                        <div class="tc-date">2027+</div>
+                        <h4>Cloud Security Professional Career ☁️</h4>
+                        <p>Working as a Cloud Security professional. Target roles: Cloud
+                            Security Analyst, Cloud Compliance Officer, AWS Cloud Engineer (Security Focus), DevSecOps
+                            Engineer.</p>
+                        <div class="industry-badges">
+                            <span>🏦 Banking</span><span>🏢 Fintech</span><span>⚖️ Regulatory</span><span>☁️ AWS Partner
+                                Firms</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section><!-- SECURITY CHECKLISTS -->
+    <section class="section-pad" id="checklist" style="background:var(--bg-stripe)">
+        <div class="container">
+            <div class="section-header">
+                <h2>AWS Security Checklists</h2>
+                <p>Quick reference for securing a new AWS account.</p>
+            </div>
+
+            <div class="checklists">
+
+                <div class="checklist-accordion open" data-checklist="day1">
+                    <div class="checklist-header" onclick="toggleAccordion(this)">
+                        <h4>🔐 New AWS Account Security (Day 1)</h4>
+                        <span class="chevron">▼</span>
+                    </div>
+                    <div class="checklist-progress">
+                        <div class="progress-bar">
+                            <div class="progress-fill" style="width:0%"></div>
+                        </div>
+                        <div class="progress-label">0/8 completed</div>
+                    </div>
+                    <div class="checklist-body">
+                        <div class="check-item"><input type="checkbox" id="d1-1"><label for="d1-1">Enable MFA on root
+                                account — immediately, before anything else</label></div>
+                        <div class="check-item"><input type="checkbox" id="d1-2"><label for="d1-2">Create IAM admin user
+                                —
+                                stop using root for daily tasks</label></div>
+                        <div class="check-item"><input type="checkbox" id="d1-3"><label for="d1-3">Enable CloudTrail in
+                                ALL
+                                regions (not just your primary region)</label></div>
+                        <div class="check-item"><input type="checkbox" id="d1-4"><label for="d1-4">Enable AWS Config to
+                                track configuration changes</label></div>
+                        <div class="check-item"><input type="checkbox" id="d1-5"><label for="d1-5">Set billing alerts in
+                                CloudWatch — cost is also a security concern</label></div>
+                        <div class="check-item"><input type="checkbox" id="d1-6"><label for="d1-6">Review default
+                                Security
+                                Groups — remove 0.0.0.0/0 rules</label></div>
+                        <div class="check-item"><input type="checkbox" id="d1-7"><label for="d1-7">Enable GuardDuty — it
+                                costs almost nothing and runs 24/7</label></div>
+                        <div class="check-item"><input type="checkbox" id="d1-8"><label for="d1-8">Set a strong password
+                                policy for all IAM users</label></div>
+                    </div>
+                </div>
+
+                <div class="checklist-accordion" data-checklist="s3">
+                    <div class="checklist-header" onclick="toggleAccordion(this)">
+                        <h4>📦 S3 Bucket Security</h4>
+                        <span class="chevron">▼</span>
+                    </div>
+                    <div class="checklist-progress">
+                        <div class="progress-bar">
+                            <div class="progress-fill" style="width:0%"></div>
+                        </div>
+                        <div class="progress-label">0/7 completed</div>
+                    </div>
+                    <div class="checklist-body">
+                        <div class="check-item"><input type="checkbox" id="s3-1"><label for="s3-1">Block ALL public
+                                access
+                                (account-wide S3 setting)</label></div>
+                        <div class="check-item"><input type="checkbox" id="s3-2"><label for="s3-2">Enable versioning on
+                                critical buckets</label></div>
+                        <div class="check-item"><input type="checkbox" id="s3-3"><label for="s3-3">Enable server-side
+                                encryption (SSE-KMS preferred)</label></div>
+                        <div class="check-item"><input type="checkbox" id="s3-4"><label for="s3-4">Enable access logging
+                                for
+                                audit trails</label></div>
+                        <div class="check-item"><input type="checkbox" id="s3-5"><label for="s3-5">Review bucket
+                                policies —
+                                no public read/write allowed</label></div>
+                        <div class="check-item"><input type="checkbox" id="s3-6"><label for="s3-6">Enable Object Lock
+                                for
+                                compliance-critical data</label></div>
+                        <div class="check-item"><input type="checkbox" id="s3-7"><label for="s3-7">Set lifecycle rules
+                                for
+                                data retention and auto-deletion</label></div>
+                    </div>
+                </div>
+
+                <div class="checklist-accordion" data-checklist="iamsec">
+                    <div class="checklist-header" onclick="toggleAccordion(this)">
+                        <h4>🔑 IAM Security Best Practices</h4>
+                        <span class="chevron">▼</span>
+                    </div>
+                    <div class="checklist-progress">
+                        <div class="progress-bar">
+                            <div class="progress-fill" style="width:0%"></div>
+                        </div>
+                        <div class="progress-label">0/7 completed</div>
+                    </div>
+                    <div class="checklist-body">
+                        <div class="check-item"><input type="checkbox" id="iam-1"><label for="iam-1">No active root
+                                access
+                                keys — delete them if they exist</label></div>
+                        <div class="check-item"><input type="checkbox" id="iam-2"><label for="iam-2">MFA enabled for ALL
+                                IAM
+                                users (especially admins)</label></div>
+                        <div class="check-item"><input type="checkbox" id="iam-3"><label for="iam-3">No inline policies
+                                —
+                                use AWS managed or customer managed policies</label></div>
+                        <div class="check-item"><input type="checkbox" id="iam-4"><label for="iam-4">Review unused
+                                credentials (>90 days inactive = revoke)</label></div>
+                        <div class="check-item"><input type="checkbox" id="iam-5"><label for="iam-5">Use IAM roles for
+                                EC2
+                                instead of storing access keys</label></div>
+                        <div class="check-item"><input type="checkbox" id="iam-6"><label for="iam-6">Enable IAM Access
+                                Analyzer in all regions</label></div>
+                        <div class="check-item"><input type="checkbox" id="iam-7"><label for="iam-7">Apply least
+                                privilege
+                                to ALL policies — audit regularly</label></div>
+                    </div>
+                </div>
+
+            </div>
+
+            <div class="checklist-actions">
+                <button class="btn btn-secondary" onclick="window.print()">🖨️ Download as PDF</button>
+                <button class="btn btn-secondary" onclick="shareChecklist()">📤 Share Checklist</button>
+            </div>
+        </div>
+    </section>
+
+    <!-- FOOTER -->
+    <footer class="footer" id="footer">
+        <div class="container">
+            <div class="footer-grid">
+                <div class="footer-brand">
+                    <div class="brand-name">🛡️ CLOUDGUARD</div>
+                    <p>Built by <strong style="color:var(--text-primary)">R Jan Steve Daniel</strong></p>
+                    <p>A cloud security learner from India 🇮🇳<br>
+                        Preparing for AWS Cloud Practitioner.<br>
+                        Building open-source cloud security resources.</p>
+                </div>
+                <div class="footer-nav">
+                    <h5>Navigation</h5>
+                    <a href="#responsibility">Shared Responsibility</a>
+                    <a href="#services">Security Services</a>
+                    <a href="#iam">IAM Deep Dive</a>
+                    <a href="#vpc">VPC Security</a>
+                    <a href="#gdpr">GDPR Compliance</a>
+                    <a href="#roadmap">Cert Roadmap</a>
+                    <a href="#checklist">Checklists</a>
+                </div>
+                <div class="footer-connect">
+                    <h5>Connect With Jan</h5>
+                    <a href="https://www.linkedin.com/in/r-jan-steve-daniel-248630275" target="_blank" rel="noopener"
+                        class="connect-card">
+                        <span class="cc-icon">💼</span>
+                        <div class="cc-text"><strong>LinkedIn</strong>R Jan Steve Daniel</div>
+                    </a>
+                    <a href="https://github.com/JanSteve/cloudguard" target="_blank" rel="noopener"
+                        class="connect-card">
+                        <span class="cc-icon">⭐</span>
+                        <div class="cc-text"><strong>GitHub</strong>JanSteve/cloudguard</div>
+                    </a>
+                    <a href="https://jan-steve-portfolio.vercel.app/" target="_blank" rel="noopener"
+                        class="connect-card">
+                        <span class="cc-icon">🌐</span>
+                        <div class="cc-text"><strong>Portfolio</strong>jan-steve-portfolio.vercel.app</div>
+                    </a>
+                    <a href="mailto:janstevedaniel@gmail.com" class="connect-card">
+                        <span class="cc-icon">📧</span>
+                        <div class="cc-text"><strong>Email</strong>janstevedaniel@gmail.com</div>
+                    </a>
+                    <p style="margin-top:12px;font-size:13px;color:var(--text-dim);font-style:italic">All content is
+                        free.
+                        If this helped you, a LinkedIn connection means the world.</p>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <span>© 2025 CloudGuard. MIT License. Free forever.</span>
+                <span>Built with HTML, CSS &amp; dedication. No frameworks needed.</span>
+                <span>Powered by Vercel</span>
+            </div>
+            <p class="footer-note">"Security is not a product, but a process." — Bruce Schneier</p>
+        </div>
+    </footer>
+
+    <script>
+        // Navbar scroll
+        const navbar = document.getElementById('navbar');
+        window.addEventListener('scroll', () => { navbar.classList.toggle('scrolled', window.scrollY > 50) });
+
+        // Counter animation
+        function countUp(el, target) { let c = 0; const step = target / 60; const timer = setInterval(() => { c += step; if (c >= target) { c = target; clearInterval(timer) } el.textContent = Math.floor(c) }, 25) }
+        const nums = document.querySelectorAll('.hero-stats .num');
+        const heroObs = new IntersectionObserver(entries => { entries.forEach(e => { if (e.isIntersecting) { nums.forEach(n => countUp(n, +n.dataset.target)); heroObs.disconnect() } }) }, { threshold: 0.3 });
+        heroObs.observe(document.querySelector('.hero-stats'));
+
+        // Scroll animations
+        const scrollEls = document.querySelectorAll('.fade-in,.fade-left,.fade-right,.section-header h2');
+        const scrollObs = new IntersectionObserver(entries => { entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('visible'); scrollObs.unobserve(e.target) } }) }, { threshold: 0.15, rootMargin: '0px 0px -40px 0px' });
+        scrollEls.forEach(el => scrollObs.observe(el));
+
+        // Service filter
+        document.querySelectorAll('.filter-tab').forEach(tab => {
+            tab.addEventListener('click', () => {
+                document.querySelectorAll('.filter-tab').forEach(t => t.classList.remove('active'));
+                tab.classList.add('active');
+                const f = tab.dataset.filter;
+                document.querySelectorAll('.service-card').forEach(card => {
+                    card.classList.toggle('hidden', f !== 'all' && card.dataset.category !== f);
+                })
+            })
+        });
+
+        // Accordion
+        function toggleAccordion(header) { header.closest('.checklist-accordion').classList.toggle('open') }
+
+        // Checklists localStorage
+        function initChecklists() {
+            document.querySelectorAll('.checklist-accordion').forEach(acc => {
+                const key = 'cg-' + acc.dataset.checklist;
+                const saved = JSON.parse(localStorage.getItem(key) || '{}');
+                const checks = acc.querySelectorAll('input[type="checkbox"]');
+                checks.forEach(cb => {
+                    if (saved[cb.id]) cb.checked = true;
+                    cb.addEventListener('change', () => {
+                        const state = {};
+                        checks.forEach(c => state[c.id] = c.checked);
+                        localStorage.setItem(key, JSON.stringify(state));
+                        updateProgress(acc)
+                    })
+                });
+                updateProgress(acc)
+            });
+        }
+        function updateProgress(acc) {
+            const checks = acc.querySelectorAll('input[type="checkbox"]');
+            const done = [...checks].filter(c => c.checked).length;
+            const total = checks.length;
+            const pct = Math.round((done / total) * 100);
+            acc.querySelector('.progress-fill').style.width = pct + '%';
+            acc.querySelector('.progress-label').textContent = done + '/' + total + ' completed';
+        }
+        initChecklists();
+
+        // Copy IAM Policy
+        function copyPolicy(btn) {
+            const code = btn.closest('.policy-block').querySelector('pre').textContent;
+            navigator.clipboard.writeText(code).then(() => { btn.textContent = '✅ Copied!'; setTimeout(() => btn.textContent = '📋 Copy', 2000) });
+        }
+
+        // Share checklist
+        function shareChecklist() {
+            navigator.clipboard.writeText(window.location.href + '#checklist').then(() => { alert('Link copied to clipboard! Share it on LinkedIn.') });
+        }
+    </script>
+</body>
+
+</html>
