@@ -6,7 +6,7 @@
 
 ![CloudGuard Preview](og-image.png)
 
-## 🌐 Live → [cloudguard.vercel.app]((https://cloudguard-five.vercel.app/))
+## 🌐 Live → (https://cloudguard-five.vercel.app/)
 
 ---
 
